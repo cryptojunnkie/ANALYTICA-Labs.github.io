@@ -67,11 +67,7 @@ def app():
     chart_types = ["Candlestick Chart", "Line Chart"]
     chart_type = st.sidebar.radio("Select Chart Type:", chart_types)
     
-<<<<<<< HEAD
-    degree = st.sidebar.slider("Select Polynomial Degree for Regression Curve", min_value=1, max_value=200, value=14, step=1, format="%d", help="Changing the line shape on the stock price chart can affect how often you buy stocks regularly. If the line is wavy, you might buy stocks more often when the price changes a little. This means you'll put a bit of money in more often, which can make your investments more diverse but might cost you more in fees. On the other hand, if the line is smoother, you might buy stocks less frequently based on larger trends, so each time you invest more money but less often. This can make your plan simpler but you might miss some short-term deals. So, it's like deciding how many times you want to buy, how much you want to invest each time, and how much extra it might cost you when you pick how the line looks on the chart.")
-=======
-    degree = st.sidebar.slider("Select Polynomial Degree for Regression Curve", min_value=1, max_value=200, value=14, step=1, format="%d", help="Changing the line shape on the stock price chart can affect how often you buy stocks regularly. If the line is wavy, you might buy stocks more often when the price changes a little. This means you'll put a bit of money in more often, which can make your investments more diverse but might cost you more in fees. On the other hand, if the line is smoother, you might buy stocks less frequently based on larger trends, so each time you invest more money but less often. This can make your plan simpler but you might miss some short-term deals. So, it's like deciding how many times you want to buy, how much you want to invest each time, and how much extra it might cost you when you pick how the line looks on the chart.")
->>>>>>> 12cba3eb26b596f28cb44028bc916ebbf1059fea
+    degree = st.sidebar.slider("Select Polynomial Degree for Regression Curve", min_value=1, max_value=200, value=12, step=1, format="%d", help="Changing the line shape on the stock price chart can affect how often you buy stocks regularly. If the line is wavy, you might buy stocks more often when the price changes a little. This means you'll put a bit of money in more often, which can make your investments more diverse but might cost you more in fees. On the other hand, if the line is smoother, you might buy stocks less frequently based on larger trends, so each time you invest more money but less often. This can make your plan simpler but you might miss some short-term deals. So, it's like deciding how many times you want to buy, how much you want to invest each time, and how much extra it might cost you when you pick how the line looks on the chart.")
     
     # Add a tooltip in the sidebar
     st.sidebar.markdown("Hover over the info icon > ℹ️ < for more details.")
@@ -199,8 +195,4 @@ def app():
         st.rerun()
 
 if __name__ == "__main__":
-<<<<<<< HEAD
     app()
-=======
-    app()
->>>>>>> 12cba3eb26b596f28cb44028bc916ebbf1059fea
