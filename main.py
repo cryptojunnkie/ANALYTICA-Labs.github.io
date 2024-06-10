@@ -122,13 +122,17 @@ def app():
         stock_data = get_stock_data(symbol)
         
         if stock_data is not None:
-            if stock_data is not None:
-                # Get stock name
-                stock_name = yf.Ticker(symbol).info['longName']
+            stock_info = yf.Ticker(symbol).info
+            if 'longName' in stock_info:
+                stock_name = stock_info['longName']
+            elif 'shortName' in stock_info:
+                stock_name = stock_info['shortName']
+            else:
+                stock_name = symbol
 
-                # Display stock name with customized font size and weight
-                st.markdown(f"<p style='font-size:30px; font-weight:bold;'>{stock_name}</p>", unsafe_allow_html=True)
-            
+            # Display stock name with customized font size and weight
+            st.markdown(f"<p style='font-size:30px; font-weight:bold;'>{stock_name}</p>", unsafe_allow_html=True)
+    
             daily_diff, weekly_diff, monthly_diff, days_90_diff, months_6_diff = calculate_price_differences(stock_data)
             percentage_difference_daily = (daily_diff / stock_data['Close'].iloc[-2]) * 100
             percentage_difference_weekly = (weekly_diff / stock_data['Close'].iloc[-6]) * 100
@@ -195,4 +199,4 @@ def app():
         st.rerun()
 
 if __name__ == "__main__":
-    app()
+     app()
