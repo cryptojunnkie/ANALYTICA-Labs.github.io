@@ -59,15 +59,16 @@ def calculate_regression_curve(x_values, y_values, degree=2, num_bands=4):
 
 # Main app function
 def app():
-    st.set_page_config(page_title="Stock Dashboard", layout="wide", page_icon="📈")
-    st.title("📈 Stock Dashboard")
+    st.set_page_config(page_title="ANALYTICA Labs", layout="wide", page_icon="📈")
+    st.title("📈 DCA NAVIGATOR")
+    st.sidebar.title("ANALYTICA Labs")  # Adding your company name to the sidebar
 
     popular_symbols = ["AAL", "AAPL", "ADBE", "ABNB", "ADSK", "ADP", "ALXN", "ALGN", "ALLK", "ALNY", "AMAT", "AMZN", "ASML", "ADP", "ATVI", "AVGO", "BABA", "BILI", "BIIB", "BKNG", "BMRN", "CDNS", "CELG", "CERN", "CHTR", "COUP", "CRWD", "DDOG", "DOCU", "DXCM", "EA", "EBAY", "EXPE", "FAST", "FISV", "FTNT", "GILD", "GME", "GOOGL", "GOOG", "HAS", "HOLX", "IDXX", "ILMN", "INCY", "INTC", "INTU", "ISRG", "JD", "KLAC", "LRCX", "LULU", "MAR", "MELI", "META", "MRVL", "MDLZ", "MNST", "MSFT", "MU", "NFLX", "NVDA", "NXPI", "OKTA", "ORLY", "PEP", "PANW", "PAYC", "PYPL", "QCOM", "REGN", "ROST", "SGEN", "SIRI", "SMAR", "SNAP", "SPLK", "SWKS", "TCBI", "TEAM", "TMUS", "TSLA", "TXN", "VRSK", "VRSN", "VRTX", "WBA", "WDAY", "XEL", "XLNX", "ZM", "ZS", "AAVE-USD", "ADA-USD", "ALGO-USD", "APT21794-USD", "AR-USD", "AXS-USD", "AVAX-USD", "BCH-USD", "BGB-USD", "BNB-USD", "BONK-USD", "BRETT29743-USD", "BTCB-USD", "BTC-USD", "BEAM28298-USD", "CHEEL-USD", "CHZ-USD", "CORE23254-USD", "CRO-USD", "DAI-USD", "DOGE-USD", "DOT-USD", "DYDX-USD", "EETH-USD", "ENA-USD", "ETC-USD", "ETH-USD", "EZETH-USD", "FET-USD", "FIL-USD", "FLR-USD", "FLOW-USD", "FLOKI-USD", "FDUSD-USD", "GALA-USD", "GRT6719-USD", "HBAR-USD", "IMX10603-USD", "INJ-USD", "ICP-USD", "JITO-USD", "SOL-USD", "JASMY-USD", "JUP29210-USD", "KAS-USD", "LINK-USD", "LEO-USD", "LDO-USD", "LTC-USD", "MATIC-USD", "METH29035-USD", "MKR-USD", "MNT27075-USD", "NEAR-USD", "NOT-USD", "OKB-USD", "ONDO-USD", "OP-USD", "ORDI-USD", "PEPE24478-USD", "PYTH-USD", "RNDR-USD", "RETH-USD", "RSETH-USD", "RUNE-USD", "SEI-USD", "SHIB-USD", "SOL-USD", "STRK22691-USD", "STX4847-USD", "STETH-USD", "SUI20947-USD", "SUSDE-USD", "TAO22974-USD", "TIA22861-USD", "TON11419-USD", "THETA-USD", "TRX-USD", "UNI7083-USD", "USDC-USD", "USDE29470-USD", "USDT-USD", "VET-USD", "VBNB-USD", "W-USD", "WBNB-USD", "WBETH-USD", "WETH-USD", "WEETH-USD", "WSTETH-USD", "WTRX-USD", "XLM-USD", "XMR-USD", "XRP-USD", "ZBU-USD"]
     symbol = st.sidebar.selectbox("Select a stock symbol:", popular_symbols, index=0)
     chart_types = ["Candlestick Chart", "Line Chart"]
     chart_type = st.sidebar.radio("Select Chart Type:", chart_types)
     
-    degree = st.sidebar.slider("Select Polynomial Degree for Regression Curve", min_value=1, max_value=200, value=12, step=1, format="%d", help="Changing the line shape on the stock price chart can affect how often you buy stocks regularly. If the line is wavy, you might buy stocks more often when the price changes a little. This means you'll put a bit of money in more often, which can make your investments more diverse but might cost you more in fees. On the other hand, if the line is smoother, you might buy stocks less frequently based on larger trends, so each time you invest more money but less often. This can make your plan simpler but you might miss some short-term deals. So, it's like deciding how many times you want to buy, how much you want to invest each time, and how much extra it might cost you when you pick how the line looks on the chart.")
+    degree = st.sidebar.slider("Select Polynomial Degree for Regression Curve", min_value=1, max_value=100, value=12, step=1, format="%d", help="Changing the line shape on the stock price chart can affect how often you buy stocks regularly. If the line is wavy, you might buy stocks more often when the price changes a little. This means you'll put a bit of money in more often, which can make your investments more diverse but might cost you more in fees. On the other hand, if the line is smoother, you might buy stocks less frequently based on larger trends, so each time you invest more money but less often. This can make your plan simpler but you might miss some short-term deals. So, it's like deciding how many times you want to buy, how much you want to invest each time, and how much extra it might cost you when you pick how the line looks on the chart.")
     
     # Custom HTML and CSS code for the tooltip with adjusted width and height
     st.sidebar.markdown('''
@@ -114,7 +115,7 @@ def app():
             </span>
         </div>
     ''', unsafe_allow_html=True)
-    
+            
     if symbol:
         stock_data = get_stock_data(symbol)
         
@@ -173,7 +174,7 @@ def app():
                 chart_data.add_trace(go.Scatter(x=stock_data.index, y=upper_band, mode='lines', name= "Take Profit Zones", line=dict(color=color, width=1), showlegend=False))
                 chart_data.add_trace(go.Scatter(x=stock_data.index, y=lower_band, mode='lines', name= "DCA Buy Zones",line=dict(color=color, width=1), showlegend=False))
 
-                annotation_offset = 0.2 * len(stock_data)  # Adjust this value for the desired offset
+                annotation_offset = 0.15 * len(stock_data)  # Adjust this value for the desired offset
                 
                 # Set x-position of annotations to move freely from the right end of the stock data
                 annotation_x = stock_data.index[-1] + pd.DateOffset(days=annotation_offset)
@@ -186,7 +187,7 @@ def app():
 
             # Update layout to remove extra annotations
             chart_data.update_layout(title=f"{symbol} - {chart_type}", xaxis_rangeslider_visible=False, yaxis=dict(title="Price", tickprefix="$"), xaxis_title="")
-            st.plotly_chart(chart_data, use_container_width=True)
+            st.plotly_chart(chart_data, use_container_width=True, width=800, height=600)
 
             st.subheader("Summary")
             st.dataframe(stock_data.tail(30))  # Display the last 30 days of data
