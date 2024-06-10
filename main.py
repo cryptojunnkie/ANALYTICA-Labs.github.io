@@ -69,9 +69,6 @@ def app():
     
     degree = st.sidebar.slider("Select Polynomial Degree for Regression Curve", min_value=1, max_value=200, value=12, step=1, format="%d", help="Changing the line shape on the stock price chart can affect how often you buy stocks regularly. If the line is wavy, you might buy stocks more often when the price changes a little. This means you'll put a bit of money in more often, which can make your investments more diverse but might cost you more in fees. On the other hand, if the line is smoother, you might buy stocks less frequently based on larger trends, so each time you invest more money but less often. This can make your plan simpler but you might miss some short-term deals. So, it's like deciding how many times you want to buy, how much you want to invest each time, and how much extra it might cost you when you pick how the line looks on the chart.")
     
-    # Add a tooltip in the sidebar
-    st.sidebar.markdown("Hover over the info icon > ℹ️ < for more details.")
-
     # Custom HTML and CSS code for the tooltip with adjusted width and height
     st.sidebar.markdown('''
         <style>
@@ -103,7 +100,7 @@ def app():
         </style>
         <div class="tooltip">
             <b style="font-size: 20px;"> 
-                NASDAQ TOP STOCKS
+                NASDAQ TOP STOCKS LIST
             </b>
             <span class="tooltiptext">
                 "Apple Inc. (AAPL)",
@@ -193,6 +190,17 @@ def app():
 
             st.subheader("Summary")
             st.dataframe(stock_data.tail(30))  # Display the last 30 days of data
+            
+            st.markdown("""
+                <style>
+                    .reportview-container {
+                        margin-top: -2em;
+                    }
+                    .stDeployButton {display:none;}
+                    footer {visibility: hidden;}
+                    #stDecoration {display:none;}
+                </style>
+            """, unsafe_allow_html=True)
             
         # Refresh the app every 5 minutes
         time.sleep(60)
