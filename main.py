@@ -5,6 +5,9 @@ import plotly.graph_objs as go
 import numpy as np
 import time
 
+# Set page configuration
+st.set_page_config(page_title="ANALYTICA Labs", layout="wide", page_icon="📈")
+
 # Fetching stock data from Yahoo Finance
 def get_stock_data(symbol, time_range="max"):
     stock = yf.Ticker(symbol)
@@ -59,7 +62,19 @@ def calculate_regression_curve(x_values, y_values, degree=2, num_bands=4):
 
 # Main app function
 def app():
-    st.set_page_config(page_title="ANALYTICA Labs", layout="wide", page_icon="📈")
+    # Add Google Analytics tracking
+    st.markdown('''
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-EQ0NXTHK2E"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'G-EQ0NXTHK2E');
+        </script>
+    ''', unsafe_allow_html=True)
+
     st.title("📈 DCA NAVIGATOR")
     st.sidebar.title("ANALYTICA Labs")  # Adding your company name to the sidebar
 
@@ -154,13 +169,13 @@ def app():
             with col1:
                 st.metric("Daily Price Difference", f"${daily_diff:,.2f}", f"{percentage_difference_daily:+.2f}%")
             with col2:
-                st.metric("Weekly Price Difference", f"${weekly_diff:,.2f}",f"{percentage_difference_weekly:+.2f}%")
+                st.metric("Weekly Price Difference", f"${weekly_diff:,.2f}", f"{percentage_difference_weekly:+.2f}%")
             with col3:
-                st.metric("Monthly Price Difference", f"${monthly_diff:.2f}",f"{percentage_difference_monthly:+.2f}%")
+                st.metric("Monthly Price Difference", f"${monthly_diff:.2f}", f"{percentage_difference_monthly:+.2f}%")
             with col4:
-                st.metric("90 Days Price Difference", f"${days_90_diff:,.2f}",f"{percentage_difference_days_90:+.2f}%")
+                st.metric("90 Days Price Difference", f"${days_90_diff:,.2f}", f"{percentage_difference_days_90:+.2f}%")
             with col5:
-                st.metric("6 Months Price Difference", f"${months_6_diff:,.2f}",f"{percentage_difference_months_6:+.2f}%")
+                st.metric("6 Months Price Difference", f"${months_6_diff:,.2f}", f"{percentage_difference_months_6:+.2f}%")
 
             st.subheader(chart_type)
             chart_data = go.Figure()
@@ -171,8 +186,8 @@ def app():
             chart_data.add_trace(go.Scatter(x=stock_data.index, y=regression_values, mode='lines', name=f'Regression Curve', line=dict(color='orange', width=2)))
 
             for i, (lower_band, upper_band, color, (upper_text, upper_color, lower_text, lower_color)) in enumerate(bands):
-                chart_data.add_trace(go.Scatter(x=stock_data.index, y=upper_band, mode='lines', name= "Take Profit Zones", line=dict(color=color, width=1), showlegend=False))
-                chart_data.add_trace(go.Scatter(x=stock_data.index, y=lower_band, mode='lines', name= "DCA Buy Zones",line=dict(color=color, width=1), showlegend=False))
+                chart_data.add_trace(go.Scatter(x=stock_data.index, y=upper_band, mode='lines', name="Take Profit Zones", line=dict(color=color, width=1), showlegend=False))
+                chart_data.add_trace(go.Scatter(x=stock_data.index, y=lower_band, mode='lines', name="DCA Buy Zones", line=dict(color=color, width=1), showlegend=False))
 
                 annotation_offset = 0.15 * len(stock_data)  # Adjust this value for the desired offset
                 
@@ -207,6 +222,5 @@ def app():
         time.sleep(60)
         st.experimental_rerun()
 
-
 if __name__ == "__main__":
-     app()
+    app()
