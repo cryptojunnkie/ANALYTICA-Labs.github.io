@@ -3,7 +3,7 @@ import yfinance as yf
 import pandas as pd
 import plotly.graph_objs as go
 import numpy as np
-import time
+import time 
 
 # Set page configuration
 st.set_page_config(page_title="ANALYTICA Labs", layout="wide", page_icon="📈")
@@ -171,11 +171,11 @@ def app():
             with col2:
                 st.metric("Weekly Price Difference", f"${weekly_diff:,.2f}", f"{percentage_difference_weekly:+.2f}%")
             with col3:
-                st.metric("Monthly Price Difference", f="${monthly_diff:.2f}", f"{percentage_difference_monthly:+.2f}%")
+                st.metric("Monthly Price Difference", f"${monthly_diff:.2f}", f"{percentage_difference_monthly:+.2f}%")
             with col4:
                 st.metric("90 Days Price Difference", f"${days_90_diff:,.2f}", f"{percentage_difference_days_90:+.2f}%")
             with col5:
-                st.metric("6 Months Price Difference", f="${months_6_diff:,.2f}", f"{percentage_difference_months_6:+.2f}%")
+                st.metric("6 Months Price Difference", f"${months_6_diff:,.2f}", f"{percentage_difference_months_6:+.2f}%")
 
             st.subheader(chart_type)
             chart_data = go.Figure()
