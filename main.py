@@ -22,6 +22,10 @@ def get_stock_data(symbol, time_range="max"):
 
 # Calculate price differences based on days
 def calculate_price_differences(stock_data):
+    if len(stock_data) < 30:
+        st.error("Insufficient historical data for price difference calculations.")
+        return None, None, None, None, None
+    
     daily_diff = stock_data['Close'].iloc[-1] - stock_data['Close'].iloc[-2]
     weekly_diff = stock_data['Close'].iloc[-1] - stock_data['Close'].iloc[-6]
     monthly_diff = stock_data['Close'].iloc[-1] - stock_data['Close'].iloc[-22]
@@ -87,32 +91,33 @@ def app():
 
     # Text input for stock ticker
     symbol = st.sidebar.text_input(
-                                "Enter a stock ticker (e.g., AAPL, TSLA):",
-                                "AAPL", 
-                                help="Enter the stock symbol you wish to look up. All valid ticker can be found on Yahoo Finance. Examples include 'AAPL' for Apple Inc. and 'TSLA' for Tesla Inc."
-                                ).upper()
+        "Enter a stock ticker (e.g., AAPL, TSLA):",
+        "AAPL", 
+        help="Enter the stock symbol you wish to look up. All valid tickers can be found on Yahoo Finance. Examples include 'AAPL' for Apple Inc. and 'TSLA' for Tesla Inc."
+    ).upper()
+
     chart_types = ["Candlestick Chart", "Line Chart"]
-    chart_type = st.sidebar.radio("Select Chart Type:", chart_types, help = "To identify price action events for DCA entry use the Line Chart")
+    chart_type = st.sidebar.radio("Select Chart Type:", chart_types, help="To identify price action events for DCA entry use the Line Chart")
 
     degree = st.sidebar.slider(
-                "Select Polynomial Degree for Regression Curve", 
-                min_value=1, 
-                max_value=100, 
-                value=12, 
-                step=1,
-                format="%d", 
-                help="## Effect of Polynomial Degree on Stock Price Chart\n\n"
-                    "* **High Polynomial Degree:**\n"
-                    "  - You will see price action events more frequently, resulting in more DCA buying opportunities with smaller price changes. This allows you to invest smaller amounts more often, potentially diversifying your investments but may also lead to higher transaction fees.\n"
-                    "\n"
-                    "* **Low Polynomial Degree:**\n"
-                    "  - You will encounter price action events less often, resulting in fewer DCA opportunities with larger price changes. This means you'll invest larger amounts less frequently, which can simplify your investment strategy but might cause you to miss out on some opportunities.\n"
-                    "\n"
-                    "## Summary:\n"
-                    "## When evaluating each stock it's important to decide how often you want to DCA buy, how much to consistently invest each time a DCA price action event occurs, and how this choice affects your overall investment strategy. Each stock/cryptocurrency is subjective to working best with its own specific value. THERE IS NO ONE SET VALUE THAT IS THE HOLY GRAIL.  It all depends on your budget and desired frequency of investing."
-            )
+        "Select Polynomial Degree for Regression Curve", 
+        min_value=1, 
+        max_value=100, 
+        value=12, 
+        step=1,
+        format="%d", 
+        help="## Effect of Polynomial Degree on Stock Price Chart\n\n"
+             "* **High Polynomial Degree:**\n"
+             "  - You will see price action events more frequently, resulting in more DCA buying opportunities with smaller price changes. This allows you to invest smaller amounts more often, potentially diversifying your investments but may also lead to higher transaction fees.\n"
+             "\n"
+             "* **Low Polynomial Degree:**\n"
+             "  - You will encounter price action events less often, resulting in fewer DCA opportunities with larger price changes. This means you'll invest larger amounts less frequently, which can simplify your investment strategy but might cause you to miss out on some opportunities.\n"
+             "\n"
+             "## Summary:\n"
+             "It's important to decide how often you want to DCA buy, how much to consistently invest each time a DCA price action event occurs, and how this choice affects your overall investment strategy. Each stock/cryptocurrency is subjective to working best with its own specific value. THERE IS NO ONE SET VALUE THAT IS THE HOLY GRAIL. It all depends on your budget and desired frequency of investing."
+    )
 
-    # Custom HTML and CSS code for the tooltip with adjusted width and height
+    # Tooltip with adjusted styling for the tooltip
     st.sidebar.markdown('''
         <style>
             .tooltip {
@@ -162,16 +167,22 @@ def app():
         stock_data = get_stock_data(symbol)
 
         if stock_data is not None:
+            if len(stock_data) < 30:
+                st.error("Insufficient historical data for price difference calculations.")
+                return
+            
             stock_info = yf.Ticker(symbol).info
-            if 'longName' in stock_info:
-                stock_name = stock_info['longName']
-            elif 'shortName' in stock_info:
-                stock_name = stock_info.get('symbol', symbol)  # Get stock symbol if 'longName' and 'shortName' missing
+            stock_name = stock_info.get('longName', stock_info.get('shortName', symbol))
 
             # Display stock name with customized font size and weight
             st.markdown(f"<p style='font-size:40px; text-align: center; font-weight:bold;'>{stock_name}</p>", unsafe_allow_html=True)
 
             daily_diff, weekly_diff, monthly_diff, days_90_diff, months_6_diff = calculate_price_differences(stock_data)
+
+            # Handle potential None returns from calculating differences
+            if daily_diff is None: 
+                return
+
             percentage_difference_daily = (daily_diff / stock_data['Close'].iloc[-2]) * 100
             percentage_difference_weekly = (weekly_diff / stock_data['Close'].iloc[-6]) * 100
             percentage_difference_monthly = (monthly_diff / stock_data['Close'].iloc[-22]) * 100
