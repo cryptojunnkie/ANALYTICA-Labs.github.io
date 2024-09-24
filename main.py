@@ -294,7 +294,7 @@ def app():
             st.plotly_chart(chart_data, use_container_width=True)
 
             st.subheader("Summary")
-            st.dataframe(stock_data.tail(30), use_container_width=True)  # Display the last 30 days of data in max width
+            st.dataframe(stock_data.tail(30))  # Display the last 30 days of data in max width
 
             st.markdown("""
                 <style>
