@@ -305,18 +305,8 @@ def app():
             st.plotly_chart(chart_data, use_container_width=True)
 
             st.subheader("Summary")
-            st.dataframe(stock_data.tail(30), use_container_width=True)  # Display the last 30 days of data in max width
+            st.dataframe(stock_data.tail(30))  # Display the last 30 days of data in max width
 
-            st.markdown("""
-                <style>
-                    .reportview-container {
-                        margin-top: -2em;
-                    }
-                    .stDeployButton {display:none;}
-                    footer {visibility: hidden;}
-                    #stDecoration {display:none;}
-                </style>
-            """, unsafe_allow_html=True)
 
         # Refresh the app every 5 minutes
         time.sleep(60)
