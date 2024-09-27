@@ -35,16 +35,24 @@ def calculate_price_differences(stock_data):
 
 # Calculate a regression curve for the data and bands
 def calculate_regression_curve(x_values, y_values, degree=2, num_bands=4):
-    x_numeric = np.arange(len(x_values))  # Use an array of indices as numeric values
+    x_numeric = np.arange(len(y_values))  # Use an array of indices as numeric values
     y_numeric = y_values.values  # Extract the actual array from the pandas Series
 
-    x_transformed = x_numeric / np.max(x_numeric)  # Normalize x values to [0, 1]
-    degree_transformed = np.sqrt(degree)  # Apply a square root transformation to adjust the smoothing effect
+    # Limit polynomial degree to max of (data length - 1)
+    # Ensures that we do not request a degree higher than available data points
+    if degree > len(y_numeric) - 1:
+        degree = len(y_numeric) - 1
 
-    coefficients = np.polyfit(x_transformed, y_numeric, degree_transformed)
+    x_transformed = x_numeric / np.max(x_numeric)  # Normalize x values to [0, 1]
+    
+    # Apply polynomial fit
+    coefficients = np.polyfit(x_transformed, y_numeric, degree)
     polynomial = np.poly1d(coefficients)
+    
+    # Calculate regression values based on fitted polynomial
     regression_values = polynomial(x_transformed)
 
+    # Calculate residuals for determining standard deviation bands
     residuals = y_numeric - regression_values
     std_residuals = np.std(residuals)
     
@@ -58,8 +66,8 @@ def calculate_regression_curve(x_values, y_values, degree=2, num_bands=4):
     ]
 
     for i in range(1, num_bands + 1):
-        lower_band = regression_values - i * std_residuals
-        upper_band = regression_values + i * std_residuals
+        lower_band = regression_values - i * 1.5 * std_residuals
+        upper_band = regression_values + i * 1.5 * std_residuals
         bands.append((lower_band, upper_band, colors[i - 1], band_annotations[i - 1]))
 
     return regression_values, bands, degree
@@ -99,11 +107,12 @@ def app():
     chart_types = ["Candlestick Chart", "Line Chart"]
     chart_type = st.sidebar.radio("Select Chart Type:", chart_types, help="To identify price action events for DCA entry use the Line Chart")
 
+    # Polynomial regression settings
     degree = st.sidebar.slider(
         "Select Polynomial Degree for Regression Curve", 
         min_value=1, 
         max_value=100, 
-        value=12, 
+        value=2, 
         step=1,
         format="%d", 
         help="## Effect of Polynomial Degree on Stock Price Chart\n\n"
@@ -226,14 +235,16 @@ def app():
                     showlegend=False  # Hide the legend for the candlestick chart
                 ))
 
+            # Get regression values and bands
             regression_values, bands, degree = calculate_regression_curve(stock_data.index, stock_data['Close'], degree)
+            # Add regression curve trace
             chart_data.add_trace(go.Scatter(
                 x=stock_data.index,
                 y=regression_values,
                 mode='lines',
                 name='Regression Curve',
                 line=dict(color='orange', width=2),
-                showlegend=False  # Hide the legend for the regression curve
+                showlegend=False
             ))
 
             for i, (lower_band, upper_band, color, (upper_text, upper_color, lower_text, lower_color)) in enumerate(bands):
@@ -241,22 +252,22 @@ def app():
                     x=stock_data.index,
                     y=upper_band,
                     mode='lines',
-                    name="Take Profit Zones",
+                    name='Take Profit Zones',
                     line=dict(color=color, width=1),
-                    showlegend=False  # Hide the legend for the upper band
+                    showlegend=False
                 ))
 
                 chart_data.add_trace(go.Scatter(
                     x=stock_data.index,
                     y=lower_band,
                     mode='lines',
-                    name="DCA Buy Zones",
+                    name='DCA Buy Zones',
                     line=dict(color=color, width=1),
-                    showlegend=False  # Hide the legend for the lower band
+                    showlegend=False
                 ))
 
                 # Add annotations for each band
-                annotation_offset = 0.15 * len(stock_data)  # Adjust this value for the desired offset
+                annotation_offset = 0.15 * len(stock_data)
                 annotation_x = stock_data.index[-1] + pd.DateOffset(days=annotation_offset)
 
                 # Upper band annotation
@@ -284,7 +295,7 @@ def app():
                     mode='lines',
                     name='Close Price',
                     line=dict(color='blue', width=1),
-                    showlegend=False  # Hide the legend for the line chart
+                    showlegend=False
                 ))
 
             chart_data.update_layout(title=f"{symbol} - {chart_type}",
@@ -294,7 +305,7 @@ def app():
             st.plotly_chart(chart_data, use_container_width=True)
 
             st.subheader("Summary")
-            st.dataframe(stock_data.tail(30))  # Display the last 30 days of data in max width
+            st.dataframe(stock_data.tail(30), use_container_width=True)  # Display the last 30 days of data in max width
 
             st.markdown("""
                 <style>
