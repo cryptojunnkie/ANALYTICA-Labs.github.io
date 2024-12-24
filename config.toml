@@ -1,0 +1,11 @@
+[general]
+# Set layout to wide
+layout = "wide"
+
+[theme]
+# Set theme to light
+primaryColor = "#F63366"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F0F2F5"
+textColor = "#000000"
+font = "sans serif"
