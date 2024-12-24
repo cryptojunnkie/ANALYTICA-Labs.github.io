@@ -580,7 +580,7 @@ def app():
 
         # Refresh the app every 5 minutes
         time.sleep(60)
-        st.experimental_rerun()
+        st.rerun()
 
 if __name__ == "__main__":
     app()
