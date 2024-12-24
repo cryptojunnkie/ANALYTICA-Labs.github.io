@@ -572,7 +572,7 @@ def app():
                                       xaxis_rangeslider_visible=False,
                                       yaxis=dict(title="Price", tickprefix="$"),
                                       xaxis_title="")
-            st.plotly_chart(chart_data, use_container_width=True)
+            st.plotly_chart(chart_data)
 
             st.subheader("Summary")
             st.dataframe(stock_data.tail(30))  # Display the last 30 days of data in max width
