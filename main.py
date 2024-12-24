@@ -267,7 +267,7 @@ def app():
             last_30_days.rename(columns={'index': 'Date'}, inplace=True)  # Rename the index column to 'Date'
             
             # Display the DataFrame in a scrollable format
-            st.dataframe(last_30_days, height=300, use_container_width=True)  # Display the DataFrame, set height to control initial view
+            st.dataframe(last_30_days, height=300)  # Display the DataFrame, set height to control initial view
 
         # Refresh the app every 5 minutes
         time.sleep(60)
